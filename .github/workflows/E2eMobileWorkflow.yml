@@ -4,9 +4,7 @@ on:
   repository_dispatch:
     types:
       - build-and-test
-  push:
-    branches:
-      - "*"
+ 
 
 jobs:
   test:

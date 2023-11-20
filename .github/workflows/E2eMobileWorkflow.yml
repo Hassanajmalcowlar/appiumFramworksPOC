@@ -24,7 +24,8 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      -uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+      
       - name: Add avdmanager and sdkmanager to system PATH
         run: |
             echo "$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/${{ env.ANDROID_BUILD_TOOLS_VERSION }}" >> $GITHUB_PATH
@@ -51,12 +52,12 @@ jobs:
       - name: Execute the test
         run: | 
           npm run mobile
-      -- name: Generate report
+      - name: Generate report
         if: always()
         run: | 
           npx allure generate report/allure-results
 
-        - name: Upload artifact
+      - name: Upload artifact
         if: always()
         uses: actions/upload-pages-artifact@v1
         with:

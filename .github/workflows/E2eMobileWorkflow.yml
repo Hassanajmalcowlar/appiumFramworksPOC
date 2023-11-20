@@ -27,14 +27,7 @@ jobs:
         with:
           api-level: 29
           script: ./gradlew connectedCheck
-      - name: Set up Android Emulator
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 33
-          package: system-images;android-30;google_apis;x86_64
-          build-tools-version: 30.0.3
-          emulator-name: emulator
-          script: ./gradlew connectedCheck
+      
 
       - name: Start Emulator
         run: |

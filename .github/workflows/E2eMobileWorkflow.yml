@@ -3,7 +3,7 @@ name: E2E workflow
 on:
   repository_dispatch:
     types:
-      - test-flutter-code
+      - build-and-test
   push:
     branches:
       - "*"
@@ -13,17 +13,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Trigger Source Repository Workflow
-        uses: peter-evans/repository-dispatch@v1
-        with:
-          token: ${{ secrets.PAT }} # Replace with your PAT
-          repository: Hassanajmalcowlar/test-flutter-application
-          event-type: build-and-test
+      # - name: Trigger Source Repository Workflow
+      #   uses: peter-evans/repository-dispatch@v1
+      #   with:
+      #     token: ${{ secrets.PAT }} # Replace with your PAT
+      #     repository: Hassanajmalcowlar/test-flutter-application
+      #     event-type: build-and-test
 
       - name: Download APK Artifact
         uses: actions/download-artifact@v2
         with:
           name: app-release.apk
+         
 
       - name: Set up Android Emulator
         uses: reactivecircus/android-emulator-runner@v2

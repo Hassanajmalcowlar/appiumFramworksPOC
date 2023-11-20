@@ -4,6 +4,9 @@ on:
   repository_dispatch:
     types:
       - test-flutter-code
+  push:
+    branches:
+      - "main"
 
 jobs:
   test:

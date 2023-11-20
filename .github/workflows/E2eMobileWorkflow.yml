@@ -16,7 +16,7 @@ jobs:
       - name: Trigger Source Repository Workflow
         uses: peter-evans/repository-dispatch@v1
         with:
-          token: ${{ secrets.PAT_FOR_TRIGGER }} # Replace with your PAT
+          token: ${{ secrets.PAT }} # Replace with your PAT
           repository: Hassanajmalcowlar/test-flutter-application
           event-type: build-and-test
 

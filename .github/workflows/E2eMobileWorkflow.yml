@@ -1,0 +1,85 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: E2E mobile test workflow
+
+on:
+  push:
+    branches: 
+      - "*"
+  pull_request:
+    branches: [ "frameWorkStructure" ]
+
+env:
+  ANDROID_ARCH: x86-64
+  ANDROID_TARGET: google_apis
+  API_LEVEL: 33
+  ANDROID_BUILD_TOOLS_VERSION: 33.0.2
+  ANDROID_SDK_PACKAGES: system-images;android-30;google_apis;x86_64 platforms;android-30 build-tools;33.0.2 platform-tools emulator
+  EMULATOR_TIMEOUT: 350
+  EMULATOR_NAME: NEXUS
+jobs:
+  setup_emulator:
+    timeout-minutes: 20
+    runs-on: macos-latest
+
+    steps:
+      -uses: actions
+      - name: Add avdmanager and sdkmanager to system PATH
+        run: |
+            echo "$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/${{ env.ANDROID_BUILD_TOOLS_VERSION }}" >> $GITHUB_PATH
+      - name: Install Sdk
+      #first accepts all the licenses and install sdk 
+        run: |
+           yes Y | sdkmanager --licenses
+           sdkmanager --install ${ANDROID_SDK_PACKAGES}
+
+      - name: Launch emulator
+        run: |
+          chmod +x ./start_emu_headless.sh
+          EMULATOR_TIMEOUT=$EMULATOR_TIMEOUT EMULATOR_NAME=$EMULATOR_NAME ./start_emu_headless.sh
+
+      - name: Install appium
+        run: |
+          npm i -g appium@next --unsafe-perm=true --allow-root
+          appium driver install uiautomator2 
+      
+      - name: Install dependencies
+        run: | 
+          npm ci
+          
+      - name: Execute the test
+        run: | 
+          npm run mobile
+      -- name: Generate report
+        if: always()
+        run: | 
+          npx allure generate report/allure-results
+
+        - name: Upload artifact
+        if: always()
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: './allure-report'    
+         
+
+  
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x, 18.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - run: npm ci
+    - run: npm run build --if-present
+    - run: npm test

@@ -6,7 +6,7 @@ on:
       - test-flutter-code
   push:
     branches:
-      - "main"
+      - "*"
 
 jobs:
   test:

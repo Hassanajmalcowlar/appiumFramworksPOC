@@ -10,7 +10,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
       # - name: Trigger Source Repository Workflow
@@ -19,12 +19,14 @@ jobs:
       #     token: ${{ secrets.PAT }} # Replace with your PAT
       #     repository: Hassanajmalcowlar/test-flutter-application
       #     event-type: build-and-test
-      - name: 'Set Flutter 3.10.6'
-        uses: subosito/flutter-action@v2
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: run tests
+        uses: reactivecircus/android-emulator-runner@v2
         with:
-          flutter-version: 3.10.6
-      - name: Ensure ADB is available
-        run: sudo apt-get install -y adb 
+          api-level: 29
+          script: ./gradlew connectedCheck
       - name: Set up Android Emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:

@@ -16,8 +16,8 @@ jobs:
       - name: Trigger Source Repository Workflow
         uses: peter-evans/repository-dispatch@v1
         with:
-          token: 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  # Replace with your PAT
-          repository: hassanajmalcowlar/test-flutter-application
+          token: ${{ secrets.PAT_FOR_TRIGGER }} # Replace with your PAT
+          repository: Hassanajmalcowlar/test-flutter-application
           event-type: build-and-test
 
       - name: Download APK Artifact

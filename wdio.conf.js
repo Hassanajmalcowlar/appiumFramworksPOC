@@ -1,3 +1,8 @@
+const config = require("./configs/capabilitiesConfigs");
+const mobileCapabilities =
+  process.argv[2] === "pipeline"
+    ? config.config.pipeline
+    : config.config.localConfig;
 exports.config = {
   //
   // ====================
@@ -52,9 +57,7 @@ exports.config = {
   // Sauce Labs platform configurator - a great tool to configure your capabilities:
   // https://saucelabs.com/platform/platform-configurator
   //
-  capabilities: [
-    ...require("./configs/capabilitiesConfigs").config.capabilities,
-  ],
+  capabilities: [...mobileCapabilities],
 
   // capabilities: [
   //   {
